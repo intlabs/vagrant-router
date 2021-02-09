@@ -1,0 +1,16 @@
+[Unit]
+Description=Connect to DNS
+After=docker.service
+Wants=network-online.target docker.socket
+Requires=docker.socket
+
+[Service]
+User=root
+ExecStartPre=-/usr/bin/docker rm -f dns
+ExecStart=/usr/bin/bash -cex "exec docker run --rm --name dns --net=host local/dns dnsmasq --no-hosts --bind-interfaces --listen-address=\"$(ip -4 addr show eth1 | awk '/inet/ { print $2; exit }' | awk -F "/" '{ print $1; exit }')\" --no-daemon --host-record=wpad.enclavedomain,$(ip -4 addr show eth1 | awk '/inet/ { print $2; exit }' | awk -F "/" '{ print $1; exit }') --servers-file=/etc/dnsmasq/servers-file"
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

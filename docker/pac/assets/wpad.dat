@@ -1,0 +1,19 @@
+/*
+**********************************************************
+** Proxy for Office365
+**********************************************************
+*/
+
+function FindProxyForURL(url, host)
+{
+    if (dnsDomainIs(host, "microsoftonline.com")
+            || dnsDomainIs(host, "office.com")
+            || dnsDomainIs(host, "ipchicken.com"))
+        return "PROXY sub.proxy.att.com:8080";
+    else if (localHostOrDomainIs(host, "autoproxy.attdns.net"))
+        return "PROXY winner.dns.sbc.com:83";
+    else if (localHostOrDomainIs(host, "autotail.attdns.net"))
+        return "PROXY winner.dns.sbc.com:84";
+    
+    return "DIRECT";
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=Serve pac file
+After=docker.service
+Wants=network-online.target docker.socket
+Requires=docker.socket
+
+[Service]
+User=root
+ExecStartPre=-/usr/bin/docker rm -f pac
+ExecStart=/usr/bin/docker run --rm --name pac --net=host local/pac
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
